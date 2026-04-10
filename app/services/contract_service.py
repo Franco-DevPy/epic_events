@@ -14,6 +14,7 @@ from app.models.user import EnumRole
 from app.models.contract import EnumStatus
 from app.services.token_service import decode_token
 from app.crud.crud_user import get_user_by_id
+import sentry_sdk
 
 
 # CREATE CONTRACT
@@ -53,12 +54,15 @@ def create_contract_service(client_id, total_amount, remaining_amount, status, t
             print(Fore.RED + "Failed to create contract." + Style.RESET_ALL)
             return None
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error creating contract: {e}" + Style.RESET_ALL)
         return None
 
 
 def get_all_contracts_service(current_user):
     try:
+        # raise Exception("Test Sentry capture Get All Contracts") 
+
         contracts = get_all_contracts()
         if current_user.role == EnumRole.management.value:
             return contracts
@@ -73,6 +77,7 @@ def get_all_contracts_service(current_user):
         return []
 
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error retrieving contracts: {e}" + Style.RESET_ALL)
         return []
 
@@ -106,6 +111,7 @@ def update_contract_service(contract_id, total_amount, remaining_amount, status,
             print(Fore.RED + "Failed to update contract." + Style.RESET_ALL)
             return None
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error updating contract: {e}" + Style.RESET_ALL)
         return None
 
@@ -136,5 +142,6 @@ def delete_contract_service(contract_id, token_user):
             print(Fore.RED + "Failed to delete contract." + Style.RESET_ALL)
             return False
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error deleting contract: {e}" + Style.RESET_ALL)
         return False

@@ -13,18 +13,16 @@ from app.models.user import EnumRole
 from app.services.token_service import decode_token
 from app.crud.crud_user import get_user_by_id
 from colorama import Fore, Style
+import sentry_sdk
 
 # CREATE EVENT
 def create_event_service(event_start, event_end, location, attendees, contract_id, support_id, notes, token_user):
     from datetime import datetime
-    
     payload = decode_token(token_user)
     if not payload:
         print(Fore.RED + "Invalid token." + Style.RESET_ALL)
         return None
-    
     current_user = get_user_by_id(payload["user_id"])
-    
     if not event_start or not event_end or not location or attendees is None:
         print(Fore.RED + "Error: Event start, event end, location, and attendees are required." + Style.RESET_ALL)
         return None
@@ -46,7 +44,6 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
         if not any(user.id == support_id for user in support_users):
             print(Fore.RED + "Support user not found." + Style.RESET_ALL)
             return None
-
         # Parse datetime strings
         try:
             event_start_dt = datetime.strptime(event_start, "%Y-%m-%d %H:%M")
@@ -55,7 +52,6 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
             print(Fore.RED + f"Invalid date format. Use YYYY-MM-DD HH:MM (e.g., 2026-06-01 14:30)" + Style.RESET_ALL)
             print(Fore.RED + f"Ensure day and month have two digits (01-31 for day, 01-12 for month)" + Style.RESET_ALL)
             return None
-
         event = create_event(
             client_id=contract.client_id,
             contract_id=contract_id,
@@ -74,6 +70,7 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
             return None
 
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error creating event: {e}" + Style.RESET_ALL)
         return None
     
@@ -81,6 +78,8 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
 # READ ALL EVENTS
 def get_all_events_service(current_user):
     try:
+        # raise Exception("Test Sentry capture Get All Events") 
+
         events = get_all_events()
         if current_user.role == EnumRole.management.value:
             return events
@@ -100,7 +99,8 @@ def get_all_events_service(current_user):
             print("No events found.")
         return filtered
     except Exception as e:
-        print(f"Error retrieving events: {e}")
+        sentry_sdk.capture_exception(e)
+        print(Fore.RED + f"Error retrieving events: {e}" + Style.RESET_ALL)
         return []
     
 
@@ -170,6 +170,7 @@ def update_event_service(event_id, event_start=None, event_end=None, location=No
             return None
 
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error updating event: {e}" + Style.RESET_ALL)
         return None
 
@@ -209,5 +210,6 @@ def delete_event_service(event_id, token_user):
             return False
 
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error deleting event: {e}" + Style.RESET_ALL)
         return False

@@ -9,27 +9,24 @@ from colorama import Fore, Style
 from app.models.user import EnumRole    
 from app.services.token_service import decode_token
 from app.crud.crud_user import get_user_by_id
+import sentry_sdk
 
 
 # CREATE CLIENT
 def create_client_service(full_name, email, phone, company_name, token_user):
-
     payload = decode_token(token_user)
     if not payload:
         print(Fore.RED + "Invalid token." + Style.RESET_ALL)
         return None
-
     current_user = get_user_by_id(payload["user_id"])
-
     if not full_name or not email:
         print(Fore.RED + "Error: Name and email are required." + Style.RESET_ALL)
         return None
-
     try:
+        # raise Exception("Test Sentry capture Create Client") 
         if current_user.role != EnumRole.commercial.value:
             print(Fore.RED + "Permission denied." + Style.RESET_ALL)
             return None
-
         client = create_client(
             full_name=full_name,
             email=email,
@@ -37,12 +34,11 @@ def create_client_service(full_name, email, phone, company_name, token_user):
             company_name=company_name,
             commercial_id=current_user.id
         )
-
         if client:
             print(Fore.GREEN + "Client created successfully." + Style.RESET_ALL)
             return client
-
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error: {e}" + Style.RESET_ALL)
         return None
 
@@ -62,6 +58,7 @@ def get_all_clients_service(current_user):
             print(Fore.YELLOW + "Support role has no access to clients." + Style.RESET_ALL)
             return []
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error retrieving clients: {e}" + Style.RESET_ALL)
         return []
 
@@ -96,6 +93,7 @@ def update_client_service(client_id, full_name, email, phone, token_user):
             print(Fore.RED + "Failed to update client." + Style.RESET_ALL)
             return None
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error updating client: {e}" + Style.RESET_ALL)
         return None
 
@@ -125,5 +123,6 @@ def delete_client_service(client_id, token_user):
             print(Fore.RED + "Failed to delete client." + Style.RESET_ALL)
             return False
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error deleting client: {e}" + Style.RESET_ALL)
         return False

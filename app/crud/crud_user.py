@@ -19,7 +19,7 @@ def create_user(full_name: str, email: str, password: str, role: EnumRole):
     except Exception as e:
         session.rollback()
         print(f"Error creating user: {e}")
-
+        return None
     finally:
         session.close()
 
@@ -57,7 +57,6 @@ def update_user(user_id: int, full_name: str = None, email: str = None, password
         if not user:
             print(f"User with ID {user_id} not found.")
             return None
-
         if full_name:
             user.full_name = full_name
         if email:
@@ -66,13 +65,13 @@ def update_user(user_id: int, full_name: str = None, email: str = None, password
             user.password_hash = hash_password(password)
         if role:
             user.role = role
-
         session.commit()
         print(f"User with ID {user_id} updated successfully.")
         return user
     except Exception as e:
         session.rollback()
         print(f"Error updating user: {e}")
+        return None
     finally:
         session.close()
 
@@ -86,6 +85,7 @@ def get_users_by_role(role: EnumRole):
         return users
     except Exception as e:
         print(f"Error retrieving users by role: {e}")
+        return []
     finally:
         session.close()
 
@@ -106,6 +106,7 @@ def delete_user(user_id: int):
     except Exception as e:
         session.rollback()
         print(f"Error deleting user: {e}")
+        return False
     finally:
         session.close()
 

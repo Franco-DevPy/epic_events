@@ -22,11 +22,9 @@ def create_event(
         if event_end <= event_start:
             print(f"Error: event_end ({event_end}) must be after event_start ({event_start})")
             return None
-        
         if attendees < 0:
             print(f"Error: attendees must be a positive number")
             return None
-
         new_event = Event(
             client_id=client_id,
             contract_id=contract_id,
@@ -46,7 +44,6 @@ def create_event(
         session.rollback()
         print(f"Error creating event: {e}")
         return None
-
     finally:
         session.close()
 
@@ -194,6 +191,7 @@ def delete_event(event_id: int):
         return True
     except Exception as e:
         session.rollback()
+        sentry_sdk.capture_exception(e)
         print(f"Error deleting event: {e}")
         return False
     finally:

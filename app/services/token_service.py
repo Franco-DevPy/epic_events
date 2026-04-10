@@ -1,6 +1,7 @@
 import jwt
 from datetime import datetime, timedelta, timezone
 from app.config import SECRET_KEY, ALGORITHM
+import sentry_sdk
 
 
 def generate_token(user):
@@ -13,7 +14,6 @@ def generate_token(user):
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
-
 def decode_token(token):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -21,6 +21,7 @@ def decode_token(token):
     except jwt.ExpiredSignatureError:
         print("Token expired.")
         return None
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        sentry_sdk.capture_exception(e)
         print("Invalid token.")
         return None

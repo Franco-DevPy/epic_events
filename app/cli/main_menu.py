@@ -11,8 +11,7 @@ from app.models.user import EnumRole
 
 def main_menu(current_user, token):
     while True:
-        print(Fore.MAGENTA + f"\n=== Main Menu ({current_user.full_name} - {current_user.role}) ===" + Style.RESET_ALL)
-
+        print(Fore.MAGENTA + f"\n=== Main Menu ({current_user.full_name} - {Fore.CYAN}{current_user.role.upper()}{Fore.MAGENTA}) ===" + Style.RESET_ALL)
         if current_user.role == EnumRole.commercial.value:
             choices = ["Clients", "Contracts", "Events", "Logout"]
 
@@ -26,16 +25,12 @@ def main_menu(current_user, token):
             "Choose an option:",
             choices=choices
         ).ask()
-
         if choice == "Clients":
             client_menu(current_user, token)
-
         elif choice == "Contracts":
             contract_menu(current_user, token)
-
         elif choice == "Events":
             event_menu(current_user, token)
-
         elif choice == "Logout":
             print(Fore.YELLOW + "Logging out..." + Style.RESET_ALL)
             break

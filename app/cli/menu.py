@@ -25,19 +25,13 @@ def start_menu():
                 "Exit"
             ]
         ).ask()
-
         ## SIMULAR USER ALICE
-
         if choice == "Login Alice Commercial":
-
             while True:
                 print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
-
                 email = "alice@epic.com"
                 password = "123456"
-
                 user = login_user_service(email, password)
-
                 if user:
                     token = generate_token(user)
                     payload = decode_token(token)
@@ -50,17 +44,12 @@ def start_menu():
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
                         break
-
         if choice == "Login Charliee Support":
-
             while True:
                 print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
-
                 email = "charlie@epic.com"
                 password = "123456"
-
                 user = login_user_service(email, password)
-
                 if user:
                     token = generate_token(user)
                     payload = decode_token(token)
@@ -73,17 +62,12 @@ def start_menu():
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
                         break
-
             if choice == "Login Eve Management":
-
                 while True:
                     print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
-
                     email = "eve@epic.com"
                     password = "123456"
-
                     user = login_user_service(email, password)
-
                     if user:
                         token = generate_token(user)
                         payload = decode_token(token)
@@ -96,17 +80,12 @@ def start_menu():
                         retry = questionary.confirm("Try again?").ask()
                         if not retry:
                             break
-
         if choice == "Login":
-
             while True:
                 print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
-
                 email = questionary.text("Email:").ask()
                 password = questionary.password("Password:").ask()
-
                 user = login_user_service(email, password)
-
                 if user:
                     token = generate_token(user)
                     payload = decode_token(token)
@@ -119,15 +98,11 @@ def start_menu():
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
                         break
-
         elif choice == "Register":
-
             print(Fore.CYAN + "\n=== Register User ===" + Style.RESET_ALL)
-
             full_name = questionary.text("Full name:").ask()
             email = questionary.text("Email:").ask()
             password = questionary.password("Password:").ask()
-
             role_choice = questionary.select(
                 "Select role:",
                 choices=[
@@ -136,16 +111,13 @@ def start_menu():
                     "management"
                 ]
             ).ask()
-
             role = EnumRole(role_choice)
-
             register_user_service(
                 full_name,
                 email,
                 password,
                 role
             )
-
         elif choice == "Exit":
             print(Fore.YELLOW + "Goodbye!" + Style.RESET_ALL)
             break

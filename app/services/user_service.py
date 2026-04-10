@@ -5,6 +5,7 @@ from colorama import Fore, Style
 from colorama import Fore, Style
 from app.crud.crud_user import get_user_by_email
 from app.services.auth_service import verify_password
+import sentry_sdk
 
 
 
@@ -30,6 +31,7 @@ def register_user_service(full_name, email, password, role):
             print(Fore.RED + "Failed to register user." + Style.RESET_ALL)
             return None
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error registering user: {e}" + Style.RESET_ALL)
         return None
     
@@ -51,5 +53,6 @@ def login_user_service(email, password):
             print(Fore.RED + "Invalid password." + Style.RESET_ALL)
             return None
     except Exception as e:
+        sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error during login: {e}" + Style.RESET_ALL)
         return None

@@ -23,7 +23,7 @@ def create_client(full_name: str, email: str, phone: str, company_name: str, com
     except Exception as e:
         session.rollback()
         print(f"Error creating client: {e}")
-
+        return None
     finally:
         session.close()
 
@@ -91,6 +91,7 @@ def update_client(client_id: int, full_name: str = None, email: str = None, phon
     except Exception as e:
         session.rollback()
         print(f"Error updating client: {e}")
+        return None
     finally:
         session.close()
 
