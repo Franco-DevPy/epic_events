@@ -27,7 +27,6 @@ def start_menu():
         ## SIMULAR USER ALICE
         if choice == "Login Alice Commercial":
             while True:
-                print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
                 email = "alice@epic.com"
                 password = "123456"
                 user = login_user_service(email, password)
@@ -41,7 +40,6 @@ def start_menu():
                         break
         if choice == "Login Charliee Support":
             while True:
-                print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
                 email = "charlie@epic.com"
                 password = "123456"
                 user = login_user_service(email, password)
@@ -55,7 +53,6 @@ def start_menu():
                         break
         if choice == "Login Eve Management":
                 while True:
-                    print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
                     email = "eve@epic.com"
                     password = "123456"
                     user = login_user_service(email, password)
@@ -69,7 +66,6 @@ def start_menu():
                             break
         if choice == "Login":
             while True:
-                print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
                 email = questionary.text("Email:").ask()
                 password = questionary.password("Password:").ask()
                 user = login_user_service(email, password)
