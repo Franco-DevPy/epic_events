@@ -4,7 +4,7 @@ from colorama import Fore, Style
 from app.cli.client_menu import client_menu
 from app.cli.contract_menu import contract_menu
 from app.cli.event_menu import event_menu
-
+from app.cli.user_menu import user_menu
 
 from app.models.user import EnumRole, User
 
@@ -23,13 +23,15 @@ def main_menu(token):
             choices = ["Events", "Logout"]
 
         elif current_user.role == EnumRole.management.value:
-            choices = ["Clients", "Contracts", "Events", "Logout"]
+            choices = ["Users", "Clients", "Contracts", "Events", "Logout"]
 
         choice = questionary.select(
             "Choose an option:",
             choices=choices
         ).ask()
-        if choice == "Clients":
+        if choice == "Users":
+            user_menu(token)
+        elif choice == "Clients":
             client_menu(token)
         elif choice == "Contracts":
             contract_menu(token)

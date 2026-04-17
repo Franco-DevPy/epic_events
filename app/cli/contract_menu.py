@@ -5,7 +5,9 @@ from app.services.contract_service import (
     create_contract_service,
     get_all_contracts_service,
     update_contract_service,
-    delete_contract_service
+    delete_contract_service,
+    get_unsigned_contracts_service,
+    get_unpaid_contracts_service
 )
 
 from app.models.contract import EnumStatus
@@ -61,30 +63,82 @@ def contract_menu(token):
                 token=token
             )
         elif choice == "List contracts":
-            print(Fore.CYAN + "\n=== Contracts List ===" + Style.RESET_ALL)
-            contracts = get_all_contracts_service(token)
-            if not contracts:
-                print(Fore.YELLOW + "No contracts found." + Style.RESET_ALL)
-            else:
-                for c in contracts:
-                    print(
-                        Fore.GREEN +
-                        f"[ID {c.id}] Client :  {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
-                        + Style.RESET_ALL
-                    )
+            # Sub-menu for filtering contracts
+            while True:
+                print(Fore.MAGENTA + "\n=== Filter Contracts ===" + Style.RESET_ALL)
+                filter_choice = questionary.select(
+                    "Select filter:",
+                    choices=[
+                        "All contracts",
+                        "Unsigned contracts",
+                        "Unpaid contracts",
+                        "Back"
+                    ]
+                ).ask()
+                
+                if filter_choice == "All contracts":
+                    print(Fore.CYAN + "\n=== All Contracts ===" + Style.RESET_ALL)
+                    contracts = get_all_contracts_service(token)
+                    if not contracts:
+                        print(Fore.YELLOW + "No contracts found." + Style.RESET_ALL)
+                    else:
+                        for c in contracts:
+                            print(
+                                Fore.GREEN +
+                                f"[ID {c.id}] Client: {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
+                                + Style.RESET_ALL
+                            )
+                
+                elif filter_choice == "Unsigned contracts":
+                    print(Fore.CYAN + "\n=== Unsigned Contracts ===" + Style.RESET_ALL)
+                    contracts = get_unsigned_contracts_service(token)
+                    if not contracts:
+                        print(Fore.YELLOW + "No unsigned contracts found." + Style.RESET_ALL)
+                    else:
+                        for c in contracts:
+                            print(
+                                Fore.GREEN +
+                                f"[ID {c.id}] Client: {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
+                                + Style.RESET_ALL
+                            )
+                
+                elif filter_choice == "Unpaid contracts":
+                    print(Fore.CYAN + "\n=== Unpaid Contracts ===" + Style.RESET_ALL)
+                    contracts = get_unpaid_contracts_service(token)
+                    if not contracts:
+                        print(Fore.YELLOW + "No unpaid contracts found." + Style.RESET_ALL)
+                    else:
+                        for c in contracts:
+                            print(
+                                Fore.GREEN +
+                                f"[ID {c.id}] Client: {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
+                                + Style.RESET_ALL
+                            )
+                
+                elif filter_choice == "Back":
+                    break
         elif choice == "Update contract":
             print(Fore.CYAN + "\n=== Update Contract ===" + Style.RESET_ALL)
             contracts = get_all_contracts_service(token)
             if not contracts:
                 print(Fore.YELLOW + "No contracts available." + Style.RESET_ALL)
                 continue
+            
+            contract_choices = [
+                f"{c.id} - Client :  {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
+                for c in contracts
+            ]
+            contract_choices.append("Cancel")
+            
             contract_choice = questionary.select(
                 "Select contract:",
-                choices=[
-                    f"{c.id} - Client :  {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
-                    for c in contracts
-                ]
+                choices=contract_choices
             ).ask()
+            
+            if contract_choice == "Cancel":
+                print(Fore.YELLOW + "Update cancelled." + Style.RESET_ALL)
+                continue
+            
             contract_id = int(contract_choice.split(" - ")[0])
             total_amount = questionary.text("New total amount (leave empty):").ask()
             remaining_amount = questionary.text("New remaining amount (leave empty):").ask()
@@ -108,13 +162,22 @@ def contract_menu(token):
             if not contracts:
                 print(Fore.YELLOW + "No contracts available." + Style.RESET_ALL)
                 continue
+            
+            contract_choices = [
+                f"{c.id} - Client :  {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
+                for c in contracts
+            ]
+            contract_choices.append("Cancel")
+            
             contract_choice = questionary.select(
                 "Select contract to delete:",
-                choices=[
-                    f"{c.id} - Client :  {c.client.full_name} | ({c.client.company_name}) | total: {c.total_amount}€ | remaining: {c.remaining_amount}€ | {c.status.value}"
-                    for c in contracts
-                ]
+                choices=contract_choices
             ).ask()
+            
+            if contract_choice == "Cancel":
+                print(Fore.YELLOW + "Deletion cancelled." + Style.RESET_ALL)
+                continue
+            
             contract_id = int(contract_choice.split(" - ")[0])
             confirm = questionary.confirm("Are you sure?").ask()
             if confirm:
