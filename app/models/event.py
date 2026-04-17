@@ -16,9 +16,9 @@ class Event(Base):
         ForeignKey("contracts.id"),
         nullable=False
     )
-    support_id: Mapped[int] = mapped_column(
+    support_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"),
-        nullable=False
+        nullable=True
     )
     event_start: Mapped[datetime] 
     event_end: Mapped[datetime]
