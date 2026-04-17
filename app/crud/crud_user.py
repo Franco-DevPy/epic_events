@@ -29,7 +29,6 @@ def get_user_by_email(email: str):
     session = get_db_session()
     try:
         user = session.query(User).filter_by(email=email).first()
-        print(f"User with email '{email}' retrieved successfully.")
         return user
     except Exception as e:
         print(f"Error retrieving user: {e}")
@@ -42,7 +41,6 @@ def get_user_by_id(user_id: int):
     session = get_db_session()
     try:
         user = session.get(User, user_id)
-        print(f"User with ID '{user_id}' retrieved successfully.")
         return user
     except Exception as e:
         print(f"Error retrieving user: {e}")
@@ -72,6 +70,19 @@ def update_user(user_id: int, full_name: str = None, email: str = None, password
         session.rollback()
         print(f"Error updating user: {e}")
         return None
+    finally:
+        session.close()
+
+
+# CRUD operations GET ALL USERS
+def get_all_users():
+    session = get_db_session()
+    try:
+        users = session.query(User).all()
+        return users
+    except Exception as e:
+        print(f"Error retrieving users: {e}")
+        return []
     finally:
         session.close()
 

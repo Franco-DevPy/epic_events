@@ -9,7 +9,7 @@ from datetime import datetime
 def create_event(
     client_id: int,
     contract_id: int,
-    support_id: int,
+    support_id: int | None,
     event_start: datetime,
     event_end: datetime,
     location: str,
@@ -77,7 +77,6 @@ def get_all_events():
             selectinload(Event.support)
         )
         events = session.scalars(stmt).all()
-        print(f"Retrieved {len(events)} event(s) successfully.")
         return events
     except Exception as e:
         print(f"Error retrieving events: {e}")
@@ -95,7 +94,6 @@ def get_events_by_contract(contract_id: int):
             selectinload(Event.support)
         )
         events = session.scalars(stmt).all()
-        print(f"Retrieved {len(events)} event(s) for contract ID '{contract_id}'.")
         return events
     except Exception as e:
         print(f"Error retrieving events by contract: {e}")
@@ -113,10 +111,28 @@ def get_events_by_support(support_id: int):
             selectinload(Event.support)
         )
         events = session.scalars(stmt).all()
-        print(f"Retrieved {len(events)} event(s) for support ID '{support_id}'.")
         return events
     except Exception as e:
         print(f"Error retrieving events by support: {e}")
+        return []
+    finally:
+        session.close()
+
+
+def get_events_without_support():
+    session = get_db_session()
+    try:
+        stmt = select(Event).where(
+            Event.support_id == None
+        ).options(
+            selectinload(Event.contract),
+            selectinload(Event.client),
+            selectinload(Event.support)
+        )
+        events = session.scalars(stmt).all()
+        return events
+    except Exception as e:
+        print(f"Error retrieving events without support: {e}")
         return []
     finally:
         session.close()

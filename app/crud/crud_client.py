@@ -49,7 +49,6 @@ def get_client_by_email(email: str):
     session = get_db_session()
     try:
         client = session.execute(select(Client).where(Client.email == email)).scalar_one_or_none()
-        print(f"Client with email '{email}' retrieved successfully.")
         return client
     except Exception as e:
         print(f"Error retrieving client: {e}")

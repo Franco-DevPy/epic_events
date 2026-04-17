@@ -59,10 +59,39 @@ def get_all_contracts():
     try:
         stmt = select(Contract).options(selectinload(Contract.client))
         contracts = session.scalars(stmt).all()
-        print(f"Retrieved {len(contracts)} contract(s) successfully.")
         return contracts
     except Exception as e:
         print(f"Error retrieving contracts: {e}")
+        return []
+    finally:
+        session.close()
+
+
+def get_unsigned_contracts():
+    session = get_db_session()
+    try:
+        stmt = select(Contract).where(
+            Contract.status == EnumStatus.unsigned
+        ).options(selectinload(Contract.client))
+        contracts = session.scalars(stmt).all()
+        return contracts
+    except Exception as e:
+        print(f"Error retrieving unsigned contracts: {e}")
+        return []
+    finally:
+        session.close()
+
+
+def get_unpaid_contracts():
+    session = get_db_session()
+    try:
+        stmt = select(Contract).where(
+            Contract.remaining_amount > 0
+        ).options(selectinload(Contract.client))
+        contracts = session.scalars(stmt).all()
+        return contracts
+    except Exception as e:
+        print(f"Error retrieving unpaid contracts: {e}")
         return []
     finally:
         session.close()
