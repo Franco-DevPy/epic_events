@@ -9,7 +9,7 @@ from app.services.client_service import (
 )
 
 
-def client_menu(current_user, token):
+def client_menu(token):
     while True:
         print(Fore.BLUE + "\n=== Clients Menu ===" + Style.RESET_ALL)
         choice = questionary.select(
@@ -34,12 +34,12 @@ def client_menu(current_user, token):
                 email=email,
                 phone=phone,
                 company_name=company_name,
-                token_user=token
+                token=token
             )
         #LIST CLIENTS
         elif choice == "List clients":
             print(Fore.CYAN + "\n=== Clients List ===" + Style.RESET_ALL)
-            clients = get_all_clients_service(current_user)
+            clients = get_all_clients_service(token)
             if not clients:
                 print(Fore.YELLOW + "No clients found." + Style.RESET_ALL)
             else:
@@ -52,7 +52,7 @@ def client_menu(current_user, token):
         # UPDATE CLIENT
         elif choice == "Update client":
             print(Fore.CYAN + "\n=== Update Client ===" + Style.RESET_ALL)
-            clients = get_all_clients_service(current_user)
+            clients = get_all_clients_service(token)
             if not clients:
                 print(Fore.YELLOW + "No clients available." + Style.RESET_ALL)
                 continue
@@ -72,12 +72,12 @@ def client_menu(current_user, token):
                 full_name=full_name or None,
                 email=email or None,
                 phone=phone or None,
-                token_user=token
+                token=token
             )
         # DELETE CLIENT
         elif choice == "Delete client":
             print(Fore.CYAN + "\n=== Delete Client ===" + Style.RESET_ALL)
-            clients = get_all_clients_service(current_user)
+            clients = get_all_clients_service(token)
             if not clients:
                 print(Fore.YELLOW + "No clients available." + Style.RESET_ALL)
                 continue

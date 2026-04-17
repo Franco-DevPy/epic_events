@@ -8,11 +8,11 @@ from app.services.contract_service import (
     delete_contract_service
 )
 
-from app.crud.crud_client import get_all_clients
 from app.models.contract import EnumStatus
+from app.services.client_service import get_all_clients_service
 
 
-def contract_menu(current_user, token):
+def contract_menu(token):
     while True:
         print(Fore.YELLOW + "\n=== Contracts Menu ===" + Style.RESET_ALL)
         choice = questionary.select(
@@ -28,7 +28,7 @@ def contract_menu(current_user, token):
         # CREATE CONTRACT
         if choice == "Create contract":
             print(Fore.CYAN + "\n=== Create Contract ===" + Style.RESET_ALL)
-            clients = get_all_clients(current_user)
+            clients = get_all_clients_service(token)
             if not clients:
                 print(Fore.RED + "No clients available." + Style.RESET_ALL)
                 continue
@@ -58,11 +58,11 @@ def contract_menu(current_user, token):
                 total_amount=total_amount,
                 remaining_amount=remaining_amount,
                 status=status,
-                token_user=token
+                token=token
             )
         elif choice == "List contracts":
             print(Fore.CYAN + "\n=== Contracts List ===" + Style.RESET_ALL)
-            contracts = get_all_contracts_service(current_user)
+            contracts = get_all_contracts_service(token)
             if not contracts:
                 print(Fore.YELLOW + "No contracts found." + Style.RESET_ALL)
             else:
@@ -74,7 +74,7 @@ def contract_menu(current_user, token):
                     )
         elif choice == "Update contract":
             print(Fore.CYAN + "\n=== Update Contract ===" + Style.RESET_ALL)
-            contracts = get_all_contracts_service(current_user)
+            contracts = get_all_contracts_service(token)
             if not contracts:
                 print(Fore.YELLOW + "No contracts available." + Style.RESET_ALL)
                 continue
@@ -100,11 +100,11 @@ def contract_menu(current_user, token):
                 total_amount=total_amount,
                 remaining_amount=remaining_amount,
                 status=status,
-                token_user=token
+                token=token
             )
         elif choice == "Delete contract":
             print(Fore.CYAN + "\n=== Delete Contract ===" + Style.RESET_ALL)
-            contracts = get_all_contracts_service(current_user)
+            contracts = get_all_contracts_service(token)
             if not contracts:
                 print(Fore.YELLOW + "No contracts available." + Style.RESET_ALL)
                 continue

@@ -6,8 +6,7 @@ from app.cli.main_menu import main_menu
 from app.services.user_service import register_user_service
 from app.models.user import EnumRole
 from app.services.login_service import login_user_service
-from app.services.token_service import generate_token, decode_token
-from app.crud.crud_user import get_user_by_id
+from app.services.token_service import generate_token
 
 
 def start_menu():
@@ -34,12 +33,8 @@ def start_menu():
                 user = login_user_service(email, password)
                 if user:
                     token = generate_token(user)
-                    payload = decode_token(token)
-                    if payload:
-                        user_id = payload["user_id"]
-                        current_user = get_user_by_id(user_id)
-                        main_menu(current_user, token)
-                        break 
+                    main_menu(token)
+                    break 
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
@@ -52,17 +47,13 @@ def start_menu():
                 user = login_user_service(email, password)
                 if user:
                     token = generate_token(user)
-                    payload = decode_token(token)
-                    if payload:
-                        user_id = payload["user_id"]
-                        current_user = get_user_by_id(user_id)
-                        main_menu(current_user, token)
-                        break 
+                    main_menu(token)
+                    break 
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
                         break
-            if choice == "Login Eve Management":
+        if choice == "Login Eve Management":
                 while True:
                     print(Fore.CYAN + "\n=== Login ===" + Style.RESET_ALL)
                     email = "eve@epic.com"
@@ -70,12 +61,8 @@ def start_menu():
                     user = login_user_service(email, password)
                     if user:
                         token = generate_token(user)
-                        payload = decode_token(token)
-                        if payload:
-                            user_id = payload["user_id"]
-                            current_user = get_user_by_id(user_id)
-                            main_menu(current_user, token)
-                            break 
+                        main_menu(token)
+                        break 
                     else:
                         retry = questionary.confirm("Try again?").ask()
                         if not retry:
@@ -88,12 +75,8 @@ def start_menu():
                 user = login_user_service(email, password)
                 if user:
                     token = generate_token(user)
-                    payload = decode_token(token)
-                    if payload:
-                        user_id = payload["user_id"]
-                        current_user = get_user_by_id(user_id)
-                        main_menu(current_user, token)
-                        break 
+                    main_menu(token)
+                    break 
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:

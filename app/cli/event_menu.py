@@ -11,7 +11,12 @@ from app.services.event_service import delete_event_service
 # SIMULAR USER
 from app.crud.crud_user import get_user_by_id
 
-def event_menu(current_user, token):
+def event_menu(token):
+    from app.models.user import User
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return
+    
     while True:
         print(Fore.CYAN + "\n=== Events Menu ===" + Style.RESET_ALL)
 
@@ -83,11 +88,11 @@ def event_menu(current_user, token):
                 contract_id=contract_id,
                 support_id=support_id,
                 notes=notes or None,
-                token_user=token
+                token=token
             )
         elif choice == "List events":
             print(Fore.CYAN + "\n=== Events List ===" + Style.RESET_ALL)
-            events = get_all_events_service(current_user)
+            events = get_all_events_service(token)
             if not events:
                 print(Fore.YELLOW + "No events found." + Style.RESET_ALL)
             else:
@@ -99,7 +104,7 @@ def event_menu(current_user, token):
                     )
         elif choice == "Update event":
             print(Fore.CYAN + "\n=== Update Event ===" + Style.RESET_ALL)
-            events = get_all_events_service(current_user)
+            events = get_all_events_service(token)
             if not events:
                 print(Fore.YELLOW + "No events available." + Style.RESET_ALL)
                 return
@@ -131,11 +136,11 @@ def event_menu(current_user, token):
                 location=location or None,
                 attendees=attendees,
                 notes=notes or None,
-                token_user=token
+                token=token
             )
         elif choice == "Delete event":
             print(Fore.CYAN + "\n=== Delete Event ===" + Style.RESET_ALL)
-            events = get_all_events_service(current_user)
+            events = get_all_events_service(token)
             if not events:
                 print(Fore.YELLOW + "No events available." + Style.RESET_ALL)
                 return

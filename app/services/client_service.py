@@ -6,19 +6,16 @@ from app.crud.crud_client import (
     delete_client
 )
 from colorama import Fore, Style
-from app.models.user import EnumRole    
-from app.services.token_service import decode_token
-from app.crud.crud_user import get_user_by_id
+from app.models.user import EnumRole, User
 import sentry_sdk
 
 
 # CREATE CLIENT
-def create_client_service(full_name, email, phone, company_name, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def create_client_service(full_name, email, phone, company_name, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-    current_user = get_user_by_id(payload["user_id"])
+    
     if not full_name or not email:
         print(Fore.RED + "Error: Name and email are required." + Style.RESET_ALL)
         return None
@@ -44,7 +41,11 @@ def create_client_service(full_name, email, phone, company_name, token_user):
 
 
 # READ ALL CLIENTS
-def get_all_clients_service(current_user):
+def get_all_clients_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
     try:
         clients = get_all_clients()
         if current_user.role == EnumRole.management.value:
@@ -64,14 +65,11 @@ def get_all_clients_service(current_user):
 
 
 # UPDATE CLIENT
-def update_client_service(client_id, full_name, email, phone, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def update_client_service(client_id, full_name, email, phone, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-
-    current_user = get_user_by_id(payload["user_id"])
-
+    
     try:
         client = get_client_by_id(client_id)
         if not client:
@@ -99,14 +97,11 @@ def update_client_service(client_id, full_name, email, phone, token_user):
 
 
 # DELETE CLIENT
-def delete_client_service(client_id, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def delete_client_service(client_id, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return False
-
-    current_user = get_user_by_id(payload["user_id"])
-
+    
     try:
         client = get_client_by_id(client_id)
         if not client:

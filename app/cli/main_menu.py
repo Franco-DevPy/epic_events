@@ -6,10 +6,14 @@ from app.cli.contract_menu import contract_menu
 from app.cli.event_menu import event_menu
 
 
-from app.models.user import EnumRole
+from app.models.user import EnumRole, User
 
 
-def main_menu(current_user, token):
+def main_menu(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return
+    
     while True:
         print(Fore.MAGENTA + f"\n=== Main Menu ({current_user.full_name} - {Fore.CYAN}{current_user.role.upper()}{Fore.MAGENTA}) ===" + Style.RESET_ALL)
         if current_user.role == EnumRole.commercial.value:
@@ -26,11 +30,11 @@ def main_menu(current_user, token):
             choices=choices
         ).ask()
         if choice == "Clients":
-            client_menu(current_user, token)
+            client_menu(token)
         elif choice == "Contracts":
-            contract_menu(current_user, token)
+            contract_menu(token)
         elif choice == "Events":
-            event_menu(current_user, token)
+            event_menu(token)
         elif choice == "Logout":
             print(Fore.YELLOW + "Logging out..." + Style.RESET_ALL)
             break

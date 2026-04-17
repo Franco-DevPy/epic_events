@@ -14,7 +14,7 @@ if not all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT]):
     raise ValueError("Database configuration is incomplete. Please check your .env file.")
 
 DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 
 def get_db_connection():
     return engine.connect()

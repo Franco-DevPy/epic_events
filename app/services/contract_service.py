@@ -10,21 +10,16 @@ from app.crud.crud_contract import (
 
 from app.crud.crud_client import get_client_by_id
 from colorama import Fore, Style
-from app.models.user import EnumRole
+from app.models.user import EnumRole, User
 from app.models.contract import EnumStatus
-from app.services.token_service import decode_token
-from app.crud.crud_user import get_user_by_id
 import sentry_sdk
 
 
 # CREATE CONTRACT
-def create_contract_service(client_id, total_amount, remaining_amount, status, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def create_contract_service(client_id, total_amount, remaining_amount, status, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-    
-    current_user = get_user_by_id(payload["user_id"])
     
     if not client_id or total_amount is None:
         print(Fore.RED + "Error: Client and total amount are required." + Style.RESET_ALL)
@@ -59,7 +54,11 @@ def create_contract_service(client_id, total_amount, remaining_amount, status, t
         return None
 
 
-def get_all_contracts_service(current_user):
+def get_all_contracts_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
     try:
         # raise Exception("Test Sentry capture Get All Contracts") 
 
@@ -82,13 +81,10 @@ def get_all_contracts_service(current_user):
         return []
 
 # UPDATE CONTRACT
-def update_contract_service(contract_id, total_amount, remaining_amount, status, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def update_contract_service(contract_id, total_amount, remaining_amount, status, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-    
-    current_user = get_user_by_id(payload["user_id"])
     
     try:
         contract = get_contract_by_id(contract_id)
@@ -117,13 +113,10 @@ def update_contract_service(contract_id, total_amount, remaining_amount, status,
 
 
 # DELETE CONTRACT
-def delete_contract_service(contract_id, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def delete_contract_service(contract_id, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return False
-    
-    current_user = get_user_by_id(payload["user_id"])
     
     try:
         contract = get_contract_by_id(contract_id)

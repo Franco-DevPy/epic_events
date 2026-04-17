@@ -9,20 +9,17 @@ from app.crud.crud_event import (
 from app.crud.crud_contract import get_contract_by_id
 from app.crud.crud_user import get_users_by_role
 from app.models.contract import EnumStatus
-from app.models.user import EnumRole
-from app.services.token_service import decode_token
-from app.crud.crud_user import get_user_by_id
+from app.models.user import EnumRole, User
 from colorama import Fore, Style
 import sentry_sdk
 
 # CREATE EVENT
-def create_event_service(event_start, event_end, location, attendees, contract_id, support_id, notes, token_user):
+def create_event_service(event_start, event_end, location, attendees, contract_id, support_id, notes, token):
     from datetime import datetime
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-    current_user = get_user_by_id(payload["user_id"])
+    
     if not event_start or not event_end or not location or attendees is None:
         print(Fore.RED + "Error: Event start, event end, location, and attendees are required." + Style.RESET_ALL)
         return None
@@ -76,7 +73,11 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
     
 
 # READ ALL EVENTS
-def get_all_events_service(current_user):
+def get_all_events_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
     try:
         # raise Exception("Test Sentry capture Get All Events") 
 
@@ -105,15 +106,12 @@ def get_all_events_service(current_user):
     
 
 # UPDATE EVENT
-def update_event_service(event_id, event_start=None, event_end=None, location=None, attendees=None, notes=None, support_id=None, token_user=None):
+def update_event_service(event_id, event_start=None, event_end=None, location=None, attendees=None, notes=None, support_id=None, token=None):
     from datetime import datetime
     
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+    current_user = User.get_current_user(token)
+    if not current_user:
         return None
-    
-    current_user = get_user_by_id(payload["user_id"])
     
     try:
         event = get_event_by_id(event_id)
@@ -175,17 +173,10 @@ def update_event_service(event_id, event_start=None, event_end=None, location=No
         return None
 
 # DELETE EVENT
-from app.models.user import EnumRole
-from app.crud.crud_contract import get_contract_by_id
-
-
-def delete_event_service(event_id, token_user):
-    payload = decode_token(token_user)
-    if not payload:
-        print(Fore.RED + "Invalid token." + Style.RESET_ALL)
+def delete_event_service(event_id, token):
+    current_user = User.get_current_user(token)
+    if not current_user:
         return False
-    
-    current_user = get_user_by_id(payload["user_id"])
     
     try:
         event = get_event_by_id(event_id)
