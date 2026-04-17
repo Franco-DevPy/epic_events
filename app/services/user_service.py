@@ -6,9 +6,9 @@ from app.crud.crud_user import (
     update_user,
     delete_user
 )
-from app.models.user import EnumRole, User
+from app.models.user import EnumRole
 from colorama import Fore, Style
-from app.services.auth_service import verify_password
+from app.services.auth_service import verify_password, get_current_user
 import sentry_sdk
 
 
@@ -64,7 +64,7 @@ def login_user_service(email, password):
 
 # Management only - CREATE USER
 def create_user_service(full_name, email, password, role, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -102,7 +102,7 @@ def create_user_service(full_name, email, password, role, token):
 
 # Management only - GET ALL USERS
 def get_all_users_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     
@@ -121,7 +121,7 @@ def get_all_users_service(token):
 
 # Management only - UPDATE USER
 def update_user_service(user_id, full_name, email, password, role, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -156,7 +156,7 @@ def update_user_service(user_id, full_name, email, password, role, token):
 
 # Management only - DELETE USER
 def delete_user_service(user_id, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return False
     

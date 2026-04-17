@@ -3,9 +3,6 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from app.database.base import Base
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional
-from colorama import Fore, Style
-from app.services.token_service import decode_token
 
 class EnumRole(str, Enum):
     commercial = "commercial"
@@ -30,18 +27,4 @@ class User(Base):
     clients = relationship("Client", back_populates="commercial")
     contracts = relationship("Contract", back_populates="commercial")
     events = relationship("Event", back_populates="support")
-
-    @classmethod
-    def get_current_user(cls, token: str) :  
-        from app.crud.crud_user import get_user_by_id
-        
-        payload = decode_token(token)
-        if not payload:
-            print(Fore.RED + "Invalid token." + Style.RESET_ALL)
-            return None
-        current_user = get_user_by_id(payload["user_id"])
-        if not current_user:
-            print(Fore.RED + "User not found." + Style.RESET_ALL)
-            return None
-            
-        return current_user
+    

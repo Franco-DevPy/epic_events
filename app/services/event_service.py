@@ -10,14 +10,15 @@ from app.crud.crud_event import (
 from app.crud.crud_contract import get_contract_by_id
 from app.crud.crud_user import get_users_by_role
 from app.models.contract import EnumStatus
-from app.models.user import EnumRole, User
+from app.models.user import EnumRole
+from app.services.auth_service import get_current_user
 from colorama import Fore, Style
 import sentry_sdk
 
 # CREATE EVENT
 def create_event_service(event_start, event_end, location, attendees, contract_id, support_id, notes, token):
     from datetime import datetime
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -77,7 +78,7 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
 
 # READ ALL EVENTS
 def get_all_events_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     
@@ -112,7 +113,7 @@ def get_all_events_service(token):
 def update_event_service(event_id, event_start=None, event_end=None, location=None, attendees=None, notes=None, support_id=None, token=None):
     from datetime import datetime
     
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -177,7 +178,7 @@ def update_event_service(event_id, event_start=None, event_end=None, location=No
 
 # DELETE EVENT
 def delete_event_service(event_id, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return False
     
@@ -211,7 +212,7 @@ def delete_event_service(event_id, token):
 
 # GET EVENTS WITHOUT SUPPORT (Management only)
 def get_events_without_support_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     

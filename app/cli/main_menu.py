@@ -6,11 +6,12 @@ from app.cli.contract_menu import contract_menu
 from app.cli.event_menu import event_menu
 from app.cli.user_menu import user_menu
 
-from app.models.user import EnumRole, User
+from app.models.user import EnumRole
+from app.services.auth_service import get_current_user
 
 
 def main_menu(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return
     

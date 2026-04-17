@@ -6,13 +6,14 @@ from app.crud.crud_client import (
     delete_client
 )
 from colorama import Fore, Style
-from app.models.user import EnumRole, User
+from app.models.user import EnumRole
+from app.services.auth_service import get_current_user
 import sentry_sdk
 
 
 # CREATE CLIENT
 def create_client_service(full_name, email, phone, company_name, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -42,7 +43,7 @@ def create_client_service(full_name, email, phone, company_name, token):
 
 # READ ALL CLIENTS
 def get_all_clients_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     
@@ -66,7 +67,7 @@ def get_all_clients_service(token):
 
 # UPDATE CLIENT
 def update_client_service(client_id, full_name, email, phone, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -98,7 +99,7 @@ def update_client_service(client_id, full_name, email, phone, token):
 
 # DELETE CLIENT
 def delete_client_service(client_id, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return False
     

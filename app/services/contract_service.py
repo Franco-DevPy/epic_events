@@ -12,14 +12,15 @@ from app.crud.crud_contract import (
 
 from app.crud.crud_client import get_client_by_id
 from colorama import Fore, Style
-from app.models.user import EnumRole, User
+from app.models.user import EnumRole
+from app.services.auth_service import get_current_user
 from app.models.contract import EnumStatus
 import sentry_sdk
 
 
 # CREATE CONTRACT
 def create_contract_service(client_id, total_amount, remaining_amount, status, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -57,7 +58,7 @@ def create_contract_service(client_id, total_amount, remaining_amount, status, t
 
 
 def get_all_contracts_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     
@@ -84,7 +85,7 @@ def get_all_contracts_service(token):
 
 # UPDATE CONTRACT
 def update_contract_service(contract_id, total_amount, remaining_amount, status, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return None
     
@@ -116,7 +117,7 @@ def update_contract_service(contract_id, total_amount, remaining_amount, status,
 
 # DELETE CONTRACT
 def delete_contract_service(contract_id, token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return False
     
@@ -144,7 +145,7 @@ def delete_contract_service(contract_id, token):
 
 # GET UNSIGNED CONTRACTS (Commercial and Management)
 def get_unsigned_contracts_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     
@@ -169,7 +170,7 @@ def get_unsigned_contracts_service(token):
 
 # GET UNPAID CONTRACTS (Commercial and Management)
 def get_unpaid_contracts_service(token):
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return []
     

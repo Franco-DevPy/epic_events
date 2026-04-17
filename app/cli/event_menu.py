@@ -13,10 +13,10 @@ from app.services.event_service import (
 
 # SIMULAR USER
 from app.crud.crud_user import get_user_by_id
+from app.services.auth_service import get_current_user
 
 def event_menu(token):
-    from app.models.user import User
-    current_user = User.get_current_user(token)
+    current_user = get_current_user(token)
     if not current_user:
         return
     
