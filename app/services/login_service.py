@@ -17,7 +17,6 @@ def login_user_service(email, password):
     try:
         user = get_user_by_email(email)
         if user and verify_password(password, user.password_hash):
-            print(f"Welcome, {user.full_name}!")
             return user
         else:
             print("Invalid email or password.")

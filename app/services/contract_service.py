@@ -5,7 +5,9 @@ from app.crud.crud_contract import (
     get_all_contracts,
     get_contract_by_id,
     update_contract,
-    delete_contract
+    delete_contract,
+    get_unsigned_contracts,
+    get_unpaid_contracts
 )
 
 from app.crud.crud_client import get_client_by_id
@@ -138,3 +140,53 @@ def delete_contract_service(contract_id, token):
         sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error deleting contract: {e}" + Style.RESET_ALL)
         return False
+
+
+# GET UNSIGNED CONTRACTS (Commercial and Management)
+def get_unsigned_contracts_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
+    try:
+        contracts = get_unsigned_contracts()
+        if current_user.role == EnumRole.management.value:
+            return contracts
+        elif current_user.role == EnumRole.commercial.value:
+            filtered = [c for c in contracts if c.commercial_id == current_user.id]
+            if not filtered:
+                print(Fore.YELLOW + "No unsigned contracts found." + Style.RESET_ALL)
+            return filtered
+        elif current_user.role == EnumRole.support.value:
+            print(Fore.YELLOW + "Support role has no access to contracts." + Style.RESET_ALL)
+            return []
+        return []
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        print(Fore.RED + f"Error retrieving unsigned contracts: {e}" + Style.RESET_ALL)
+        return []
+
+
+# GET UNPAID CONTRACTS (Commercial and Management)
+def get_unpaid_contracts_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
+    try:
+        contracts = get_unpaid_contracts()
+        if current_user.role == EnumRole.management.value:
+            return contracts
+        elif current_user.role == EnumRole.commercial.value:
+            filtered = [c for c in contracts if c.commercial_id == current_user.id]
+            if not filtered:
+                print(Fore.YELLOW + "No unpaid contracts found." + Style.RESET_ALL)
+            return filtered
+        elif current_user.role == EnumRole.support.value:
+            print(Fore.YELLOW + "Support role has no access to contracts." + Style.RESET_ALL)
+            return []
+        return []
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        print(Fore.RED + f"Error retrieving unpaid contracts: {e}" + Style.RESET_ALL)
+        return []

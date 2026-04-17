@@ -3,7 +3,8 @@ from app.crud.crud_event import (
     get_all_events,
     get_event_by_id,
     update_event,
-    delete_event
+    delete_event,
+    get_events_without_support
 )
 
 from app.crud.crud_contract import get_contract_by_id
@@ -37,10 +38,12 @@ def create_event_service(event_start, event_end, location, attendees, contract_i
         if contract.commercial_id != current_user.id:
             print(Fore.RED + "Permission denied." + Style.RESET_ALL)
             return None
-        support_users = get_users_by_role("support")
-        if not any(user.id == support_id for user in support_users):
-            print(Fore.RED + "Support user not found." + Style.RESET_ALL)
-            return None
+        # Validate support user if provided
+        if support_id is not None:
+            support_users = get_users_by_role("support")
+            if not any(user.id == support_id for user in support_users):
+                print(Fore.RED + "Support user not found." + Style.RESET_ALL)
+                return None
         # Parse datetime strings
         try:
             event_start_dt = datetime.strptime(event_start, "%Y-%m-%d %H:%M")
@@ -204,3 +207,24 @@ def delete_event_service(event_id, token):
         sentry_sdk.capture_exception(e)
         print(Fore.RED + f"Error deleting event: {e}" + Style.RESET_ALL)
         return False
+
+
+# GET EVENTS WITHOUT SUPPORT (Management only)
+def get_events_without_support_service(token):
+    current_user = User.get_current_user(token)
+    if not current_user:
+        return []
+    
+    if current_user.role != EnumRole.management.value:
+        print(Fore.RED + "Permission denied: Only management can view events without support." + Style.RESET_ALL)
+        return []
+    
+    try:
+        events = get_events_without_support()
+        if not events:
+            print(Fore.YELLOW + "No events without support found." + Style.RESET_ALL)
+        return events
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        print(Fore.RED + f"Error retrieving events without support: {e}" + Style.RESET_ALL)
+        return []
