@@ -1,0 +1,29 @@
+[flake8]
+# Configuración PEP8 para Epic Events CRM
+
+# Línea máxima de 100 caracteres (más práctico que 79)
+max-line-length = 100
+
+# Ignorar reglas específicas:
+# E501 - línea demasiado larga (ya lo controlamos con max-line-length)
+# W503 - salto de línea antes de operador binario (estilo antiguo, ahora se prefiere W503)
+# W504 - salto de línea después de operador binario (conflicto con W503)
+# D*** - Todas las reglas de docstrings (demasiado estrictas para proyecto educativo)
+# F541 - f-string sin placeholders (optimización menor, no afecta funcionalidad)
+ignore = E501,W503,W504,D,F541
+
+# Excluir directorios que no necesitan verificación
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    htmlcov,
+    .pytest_cache,
+    *.egg-info,
+    build,
+    dist
+
+# Mostrar estadísticas
+count = True
+statistics = True

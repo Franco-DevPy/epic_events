@@ -22,7 +22,7 @@ def client_menu(token):
                 "Back"
             ]
         ).ask()
-        #CREATE CLIENT
+        # CREATE CLIENT
         if choice == "Create client":
             print(Fore.CYAN + "\n=== Create Client ===" + Style.RESET_ALL)
             full_name = questionary.text("Full name:").ask()
@@ -36,7 +36,7 @@ def client_menu(token):
                 company_name=company_name,
                 token=token
             )
-        #LIST CLIENTS
+        # LIST CLIENTS
         elif choice == "List clients":
             print(Fore.CYAN + "\n=== Clients List ===" + Style.RESET_ALL)
             clients = get_all_clients_service(token)
@@ -46,9 +46,12 @@ def client_menu(token):
                 for c in clients:
                     print(
                         Fore.GREEN +
-                        f"[ID {c.id}] {c.full_name} | {c.email} | {c.company_name}"
-                        + Style.RESET_ALL
-                    )
+                        f"[ID {
+                            c.id}] {
+                            c.full_name} | {
+                            c.email} | {
+                            c.company_name}" +
+                        Style.RESET_ALL)
         # UPDATE CLIENT
         elif choice == "Update client":
             print(Fore.CYAN + "\n=== Update Client ===" + Style.RESET_ALL)
@@ -56,19 +59,19 @@ def client_menu(token):
             if not clients:
                 print(Fore.YELLOW + "No clients available." + Style.RESET_ALL)
                 continue
-            
+
             client_choices = [f"{c.id} - {c.full_name}" for c in clients]
             client_choices.append("Cancel")
-            
+
             client_choice = questionary.select(
                 "Select client:",
                 choices=client_choices
             ).ask()
-            
+
             if client_choice == "Cancel":
                 print(Fore.YELLOW + "Update cancelled." + Style.RESET_ALL)
                 continue
-            
+
             client_id = int(client_choice.split(" - ")[0])
             full_name = questionary.text("New name (leave empty):").ask()
             email = questionary.text("New email (leave empty):").ask()
@@ -87,19 +90,19 @@ def client_menu(token):
             if not clients:
                 print(Fore.YELLOW + "No clients available." + Style.RESET_ALL)
                 continue
-            
+
             client_choices = [f"{c.id} - {c.full_name}" for c in clients]
             client_choices.append("Cancel")
-            
+
             client_choice = questionary.select(
                 "Select client to delete:",
                 choices=client_choices
             ).ask()
-            
+
             if client_choice == "Cancel":
                 print(Fore.YELLOW + "Deletion cancelled." + Style.RESET_ALL)
                 continue
-            
+
             client_id = int(client_choice.split(" - ")[0])
             confirm = questionary.confirm("Are you sure?").ask()
             if confirm:

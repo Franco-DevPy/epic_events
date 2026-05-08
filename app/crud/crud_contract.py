@@ -3,17 +3,22 @@ from app.models.contract import Contract, EnumStatus
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.client import Client
-from app.models.user import User
-
 # CRUD operations CREATE
-def create_contract(client_id: int, commercial_id: int, total_amount: float, remaining_amount: float, status: EnumStatus):
+
+
+def create_contract(
+        client_id: int,
+        commercial_id: int,
+        total_amount: float,
+        remaining_amount: float,
+        status: EnumStatus):
 
     session = get_db_session()
 
     try:
         if remaining_amount > total_amount:
-            print(f"Error: remaining_amount ({remaining_amount}) cannot be greater than total_amount ({total_amount})")
+            print(
+                f"Error: remaining_amount ({remaining_amount}) cannot be greater than total_amount ({total_amount})")
             return None
         if total_amount < 0 or remaining_amount < 0:
             print(f"Error: amounts must be positive values")
@@ -27,7 +32,7 @@ def create_contract(client_id: int, commercial_id: int, total_amount: float, rem
         )
         session.add(new_contract)
         session.commit()
-        session.refresh(new_contract) 
+        session.refresh(new_contract)
         print(f"Contract for client ID '{client_id}' created successfully.")
         return new_contract
     except Exception as e:
@@ -36,7 +41,6 @@ def create_contract(client_id: int, commercial_id: int, total_amount: float, rem
         return None
     finally:
         session.close()
-
 
 
 # CRUD operations READ
@@ -97,7 +101,13 @@ def get_unpaid_contracts():
         session.close()
 
 # CRUD operations UPDATE
-def update_contract(contract_id: int, total_amount: float = None, remaining_amount: float = None, status: EnumStatus = None):
+
+
+def update_contract(
+        contract_id: int,
+        total_amount: float = None,
+        remaining_amount: float = None,
+        status: EnumStatus = None):
     session = get_db_session()
     try:
         contract = session.get(Contract, contract_id)
@@ -110,22 +120,25 @@ def update_contract(contract_id: int, total_amount: float = None, remaining_amou
                 print(f"Error: total_amount must be positive")
                 return None
             contract.total_amount = total_amount
-        
+
         if remaining_amount is not None:
             if remaining_amount < 0:
                 print(f"Error: remaining_amount must be positive")
                 return None
             contract.remaining_amount = remaining_amount
-        
+
         if contract.remaining_amount > contract.total_amount:
-            print(f"Error: remaining_amount ({contract.remaining_amount}) cannot be greater than total_amount ({contract.total_amount})")
+            print(
+                f"Error: remaining_amount ({
+                    contract.remaining_amount}) cannot be greater than total_amount ({
+                    contract.total_amount})")
             return None
-        
+
         if status is not None:
             contract.status = status
 
         session.commit()
-        session.refresh(contract) 
+        session.refresh(contract)
         print(f"Contract with ID '{contract_id}' updated successfully.")
         return contract
     except Exception as e:
@@ -155,5 +168,3 @@ def delete_contract(contract_id: int):
         return False
     finally:
         session.close()
-
-

@@ -8,6 +8,11 @@ venv/
 __pycache__/
 *.pyc
 
+# Testing
+htmlcov/
+.pytest_cache/
+.coverage
+
 # Documentation
 docs/
 

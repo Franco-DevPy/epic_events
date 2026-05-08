@@ -1,12 +1,9 @@
 from app.database.base import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import Enum as SQLAlchemyEnum
-from sqlalchemy import ForeignKey, event
+from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 from enum import Enum
-
-from app.models.client import Client
-from app.models.user import User
 
 
 class EnumStatus(str, Enum):
@@ -37,7 +34,7 @@ class Contract(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
-    
+
     client = relationship("Client", back_populates="contracts")
     commercial = relationship("User", back_populates="contracts")
     events = relationship("Event", back_populates="contract")

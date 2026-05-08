@@ -3,6 +3,7 @@ from app.models.event import Event
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from datetime import datetime
+import sentry_sdk
 
 
 # CRUD operations CREATE
@@ -20,7 +21,8 @@ def create_event(
 
     try:
         if event_end <= event_start:
-            print(f"Error: event_end ({event_end}) must be after event_start ({event_start})")
+            print(
+                f"Error: event_end ({event_end}) must be after event_start ({event_start})")
             return None
         if attendees < 0:
             print(f"Error: attendees must be a positive number")
@@ -37,7 +39,7 @@ def create_event(
         )
         session.add(new_event)
         session.commit()
-        session.refresh(new_event)  
+        session.refresh(new_event)
         print(f"Event for contract ID '{contract_id}' created successfully.")
         return new_event
     except Exception as e:
@@ -123,7 +125,7 @@ def get_events_without_support():
     session = get_db_session()
     try:
         stmt = select(Event).where(
-            Event.support_id == None
+            Event.support_id.is_(None)
         ).options(
             selectinload(Event.contract),
             selectinload(Event.client),
@@ -157,31 +159,34 @@ def update_event(
 
         if event_start is not None:
             event.event_start = event_start
-        
+
         if event_end is not None:
             event.event_end = event_end
-        
+
         if event.event_end <= event.event_start:
-            print(f"Error: event_end ({event.event_end}) must be after event_start ({event.event_start})")
+            print(
+                f"Error: event_end ({
+                    event.event_end}) must be after event_start ({
+                    event.event_start})")
             return None
-        
+
         if location is not None:
             event.location = location
-        
+
         if attendees is not None:
             if attendees < 0:
                 print(f"Error: attendees must be a positive number")
                 return None
             event.attendees = attendees
-        
+
         if notes is not None:
             event.notes = notes
-        
+
         if support_id is not None:
             event.support_id = support_id
 
         session.commit()
-        session.refresh(event)  
+        session.refresh(event)
         print(f"Event with ID '{event_id}' updated successfully.")
         return event
     except Exception as e:
@@ -212,5 +217,3 @@ def delete_event(event_id: int):
         return False
     finally:
         session.close()
-
-

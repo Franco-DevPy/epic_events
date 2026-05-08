@@ -18,7 +18,8 @@ class Client(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
-    commercial_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    commercial_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), nullable=False)
 
     commercial = relationship("User", back_populates="clients")
     contracts = relationship("Contract", back_populates="client")

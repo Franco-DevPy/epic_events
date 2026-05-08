@@ -3,6 +3,8 @@ from app.models.user import User, EnumRole
 from app.services.auth_service import hash_password
 
 # CRUD operations CREATE
+
+
 def create_user(full_name: str, email: str, password: str, role: EnumRole):
     session = get_db_session()
     try:
@@ -36,7 +38,6 @@ def get_user_by_email(email: str):
         session.close()
 
 
-
 def get_user_by_id(user_id: int):
     session = get_db_session()
     try:
@@ -48,7 +49,14 @@ def get_user_by_id(user_id: int):
         session.close()
 
 # CRUD operations UPDATE
-def update_user(user_id: int, full_name: str = None, email: str = None, password: str = None, role: EnumRole = None):
+
+
+def update_user(
+        user_id: int,
+        full_name: str = None,
+        email: str = None,
+        password: str = None,
+        role: EnumRole = None):
     session = get_db_session()
     try:
         user = session.get(User, user_id)
@@ -120,6 +128,3 @@ def delete_user(user_id: int):
         return False
     finally:
         session.close()
-
-
-

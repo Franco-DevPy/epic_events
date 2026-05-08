@@ -1,4 +1,3 @@
-from prompt_toolkit import choice
 import questionary
 from colorama import Fore, Style
 
@@ -24,7 +23,7 @@ def start_menu():
                 "Exit"
             ]
         ).ask()
-        ## SIMULAR USER ALICE
+        # SIMULAR USER ALICE
         if choice == "Login Alice Commercial":
             while True:
                 email = "alice@epic.com"
@@ -33,7 +32,7 @@ def start_menu():
                 if user:
                     token = generate_token(user)
                     main_menu(token)
-                    break 
+                    break
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
@@ -46,24 +45,24 @@ def start_menu():
                 if user:
                     token = generate_token(user)
                     main_menu(token)
-                    break 
+                    break
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:
                         break
         if choice == "Login Eve Management":
-                while True:
-                    email = "eve@epic.com"
-                    password = "123456"
-                    user = login_user_service(email, password)
-                    if user:
-                        token = generate_token(user)
-                        main_menu(token)
-                        break 
-                    else:
-                        retry = questionary.confirm("Try again?").ask()
-                        if not retry:
-                            break
+            while True:
+                email = "eve@epic.com"
+                password = "123456"
+                user = login_user_service(email, password)
+                if user:
+                    token = generate_token(user)
+                    main_menu(token)
+                    break
+                else:
+                    retry = questionary.confirm("Try again?").ask()
+                    if not retry:
+                        break
         if choice == "Login":
             while True:
                 email = questionary.text("Email:").ask()
@@ -72,7 +71,7 @@ def start_menu():
                 if user:
                     token = generate_token(user)
                     main_menu(token)
-                    break 
+                    break
                 else:
                     retry = questionary.confirm("Try again?").ask()
                     if not retry:

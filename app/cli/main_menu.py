@@ -14,9 +14,16 @@ def main_menu(token):
     current_user = get_current_user(token)
     if not current_user:
         return
-    
+
     while True:
-        print(Fore.MAGENTA + f"\n=== Main Menu ({current_user.full_name} - {Fore.CYAN}{current_user.role.upper()}{Fore.MAGENTA}) ===" + Style.RESET_ALL)
+        print(
+            Fore.MAGENTA +
+            f"\n=== Main Menu ({
+                current_user.full_name} - {
+                Fore.CYAN}{
+                current_user.role.upper()}{
+                    Fore.MAGENTA}) ===" +
+            Style.RESET_ALL)
         if current_user.role == EnumRole.commercial.value:
             choices = ["Clients", "Contracts", "Events", "Logout"]
 

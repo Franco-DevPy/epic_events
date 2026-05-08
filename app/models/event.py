@@ -1,6 +1,5 @@
 from app.database.base import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship, validates
-from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 
@@ -20,7 +19,7 @@ class Event(Base):
         ForeignKey("users.id"),
         nullable=True
     )
-    event_start: Mapped[datetime] 
+    event_start: Mapped[datetime]
     event_end: Mapped[datetime]
     location: Mapped[str]
     attendees: Mapped[int]
@@ -44,5 +43,8 @@ class Event(Base):
         return value
 
     def __repr__(self):
-        return f"<Event(id={self.id}, contract_id={self.contract_id}, location='{self.location}', start={self.event_start})>"
-    
+        return f"<Event(id={
+            self.id}, contract_id={
+            self.contract_id}, location='{
+            self.location}', start={
+                self.event_start})>"

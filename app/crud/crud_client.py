@@ -4,7 +4,14 @@ from sqlalchemy import select
 from app.models.user import EnumRole
 
 # CRUD operations CREATE
-def create_client(full_name: str, email: str, phone: str, company_name: str, commercial_id: int):
+
+
+def create_client(
+        full_name: str,
+        email: str,
+        phone: str,
+        company_name: str,
+        commercial_id: int):
 
     session = get_db_session()
 
@@ -36,7 +43,8 @@ def get_all_clients(current_user):
         if current_user.role == EnumRole.management.value:
             return clients
         elif current_user.role == EnumRole.commercial.value:
-            clients = [c for c in clients if c.commercial_id == current_user.id]
+            clients = [
+                c for c in clients if c.commercial_id == current_user.id]
         return clients
     except Exception as e:
         print(f"Error retrieving clients: {e}")
@@ -48,7 +56,8 @@ def get_all_clients(current_user):
 def get_client_by_email(email: str):
     session = get_db_session()
     try:
-        client = session.execute(select(Client).where(Client.email == email)).scalar_one_or_none()
+        client = session.execute(select(Client).where(
+            Client.email == email)).scalar_one_or_none()
         return client
     except Exception as e:
         print(f"Error retrieving client: {e}")
@@ -69,7 +78,11 @@ def get_client_by_id(client_id: int):
 
 
 # CRUD operations UPDATE
-def update_client(client_id: int, full_name: str = None, email: str = None, phone: str = None):
+def update_client(
+        client_id: int,
+        full_name: str = None,
+        email: str = None,
+        phone: str = None):
     session = get_db_session()
     try:
         client = session.get(Client, client_id)
@@ -95,6 +108,8 @@ def update_client(client_id: int, full_name: str = None, email: str = None, phon
         session.close()
 
 # CRUD operations DELETE
+
+
 def delete_client(client_id: int):
     session = get_db_session()
     try:
@@ -111,5 +126,3 @@ def delete_client(client_id: int):
         session.rollback()
         print(f"Error deleting client: {e}")
         return False
-    
-
