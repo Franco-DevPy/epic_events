@@ -22,5 +22,5 @@ sentry-sdk==2.57.0
 SQLAlchemy==2.0.48
 SQLAlchemy-Utils==0.42.1
 typing_extensions==4.15.0
-urllib3==2.6.3
+urllib3==2.7.0
 wcwidth==0.6.0
