@@ -4,8 +4,6 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 # CRUD operations CREATE
-
-
 def create_contract(
         client_id: int,
         commercial_id: int,

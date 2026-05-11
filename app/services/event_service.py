@@ -16,8 +16,6 @@ from colorama import Fore, Style
 import sentry_sdk
 
 # CREATE EVENT
-
-
 def create_event_service(
         event_start,
         event_end,
@@ -55,13 +53,11 @@ def create_event_service(
         if contract.commercial_id != current_user.id:
             print(Fore.RED + "Permission denied." + Style.RESET_ALL)
             return None
-        # Validate support user if provided
         if support_id is not None:
             support_users = get_users_by_role("support")
             if not any(user.id == support_id for user in support_users):
                 print(Fore.RED + "Support user not found." + Style.RESET_ALL)
                 return None
-        # Parse datetime strings
         try:
             event_start_dt = datetime.strptime(event_start, "%Y-%m-%d %H:%M")
             event_end_dt = datetime.strptime(event_end, "%Y-%m-%d %H:%M")
@@ -105,8 +101,6 @@ def get_all_events_service(token):
         return []
 
     try:
-        # raise Exception("Test Sentry capture Get All Events")
-
         events = get_all_events()
         if current_user.role == EnumRole.management.value:
             return events
@@ -123,7 +117,7 @@ def get_all_events_service(token):
         else:
             filtered = []
         if not filtered:
-            print("No events found.")
+            print(Fore.YELLOW + "No events found." + Style.RESET_ALL)
         return filtered
     except Exception as e:
         sentry_sdk.capture_exception(e)
@@ -176,7 +170,6 @@ def update_event_service(
                 print(Fore.RED + "Support user not found." + Style.RESET_ALL)
                 return None
 
-        # Parse datetime strings if provided
         event_start_dt = None
         event_end_dt = None
         if event_start:
@@ -229,16 +222,12 @@ def update_event_service(
         return None
 
 # DELETE EVENT
-
-
 def delete_event_service(event_id, token):
     current_user = get_current_user(token)
     if not current_user:
         return False
-
     try:
         event = get_event_by_id(event_id)
-
         if not event:
             print(
                 Fore.RED +

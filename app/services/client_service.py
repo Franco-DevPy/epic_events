@@ -54,7 +54,7 @@ def get_all_clients_service(token):
         return []
 
     try:
-        clients = get_all_clients(current_user)  # ← Pasar current_user
+        clients = get_all_clients(current_user)  
         if current_user.role == EnumRole.management.value:
             return clients
         if current_user.role == EnumRole.commercial.value:

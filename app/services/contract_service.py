@@ -79,8 +79,6 @@ def get_all_contracts_service(token):
         return []
 
     try:
-        # raise Exception("Test Sentry capture Get All Contracts")
-
         contracts = get_all_contracts()
         if current_user.role == EnumRole.management.value:
             return contracts
@@ -104,8 +102,6 @@ def get_all_contracts_service(token):
         return []
 
 # UPDATE CONTRACT
-
-
 def update_contract_service(
         contract_id,
         total_amount,
@@ -182,7 +178,7 @@ def delete_contract_service(contract_id, token):
         return False
 
 
-# GET UNSIGNED CONTRACTS (Commercial and Management)
+# GET UNSIGNED CONTRACTS
 def get_unsigned_contracts_service(token):
     current_user = get_current_user(token)
     if not current_user:
@@ -217,7 +213,7 @@ def get_unsigned_contracts_service(token):
         return []
 
 
-# GET UNPAID CONTRACTS (Commercial and Management)
+# GET UNPAID CONTRACTS
 def get_unpaid_contracts_service(token):
     current_user = get_current_user(token)
     if not current_user:
