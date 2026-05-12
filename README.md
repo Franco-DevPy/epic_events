@@ -95,6 +95,3 @@ python epicevents.py
 - Cannot access client or contract management
 
 
-## License
-
-This project is part of OpenClassrooms Python Developer path - Project 12.
