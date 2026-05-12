@@ -15,54 +15,11 @@ def start_menu():
         choice = questionary.select(
             "Welcome! Choose an option:",
             choices=[
-                "Login Alice Commercial",
-                "Login Charliee Support",
-                "Login Eve Management",
                 "Login",
                 "Register",
                 "Exit"
             ]
         ).ask()
-        # SIMULAR USER ALICE
-        if choice == "Login Alice Commercial":
-            while True:
-                email = "alice@epic.com"
-                password = "123456"
-                user = login_user_service(email, password)
-                if user:
-                    token = generate_token(user)
-                    main_menu(token)
-                    break
-                else:
-                    retry = questionary.confirm("Try again?").ask()
-                    if not retry:
-                        break
-        if choice == "Login Charliee Support":
-            while True:
-                email = "charlie@epic.com"
-                password = "123456"
-                user = login_user_service(email, password)
-                if user:
-                    token = generate_token(user)
-                    main_menu(token)
-                    break
-                else:
-                    retry = questionary.confirm("Try again?").ask()
-                    if not retry:
-                        break
-        if choice == "Login Eve Management":
-            while True:
-                email = "eve@epic.com"
-                password = "123456"
-                user = login_user_service(email, password)
-                if user:
-                    token = generate_token(user)
-                    main_menu(token)
-                    break
-                else:
-                    retry = questionary.confirm("Try again?").ask()
-                    if not retry:
-                        break
         if choice == "Login":
             while True:
                 email = questionary.text("Email:").ask()

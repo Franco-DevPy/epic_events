@@ -1,6 +1,5 @@
-from questionary import Style
 import sentry_sdk
-from colorama import Fore
+from colorama import Fore, Style
 
 
 def login_user_service(email, password):
