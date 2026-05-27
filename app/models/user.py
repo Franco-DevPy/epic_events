@@ -19,7 +19,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(unique=True)
     password_hash: Mapped[str]
     role: Mapped[str] = mapped_column(SQLAlchemyEnum(
-        "commercial", "support", "management",
+        EnumRole,
         name="enumrole",
         create_constraint=True
     ))
